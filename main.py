@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI , HTTPException
 from pydantic import BaseModel
 from typing import List
 
@@ -34,3 +34,14 @@ def create_phone(phone: Phone):
 def get_phones():
     return phones_db
 
+
+# d: GET /phones/{id}
+@app.get("/phones/{id}", response_model=Phone)
+def get_phone(id: int):
+    for phone in phones_db:
+        if phone.id == id:
+            return phone
+    raise HTTPException(
+        status_code=404,
+        detail=f"Phone avec l'id {id} n'existe pas ou n'a pas été trouvé."
+    )
